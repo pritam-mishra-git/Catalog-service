@@ -1,15 +1,32 @@
+version: '3.8'
+
 services:
+  mysql:
+    image: mysql:8.0
+    container_name: mysql-container
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: catalogue_db
+      MYSQL_USER: testuser
+      MYSQL_PASSWORD: testpassword
+    ports:
+      - "3307:3306"
+    networks:
+      - book_network
+
   springboot-microservice-catalog:
     build: .
+    depends_on:
+      - mysql
     ports:
       - "8080:8081"
     environment:
-      SPRING_DATASOURCE_URL: jdbc:mysql://host.docker.internal:3306/catalogue_db?allowPublicKeyRetrieval=true&useSSL=false
-      SPRING_DATASOURCE_USERNAME: root
-      SPRING_DATASOURCE_PASSWORD: root
-
-      SPRING_JPA_HIBERNATE_DDL_AUTO: update
-      SPRING_JPA_DATABASE_PLATFORM: org.hibernate.dialect.MySQLDialect
+      DB_HOST: host.docker.internal
+      DB_PORT: 3306
+      DB_NAME: catalogue_db
+      DB_USER: root
+      DB_PASSWORD: root
     networks:
       - book_network
 
