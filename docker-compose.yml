@@ -1,23 +1,10 @@
 
 services:
-  mysql:
-    image: mysql:8.0
-    container_name: mysql-container
-    restart: always
-    environment:
-      MYSQL_ROOT_PASSWORD: root
-      MYSQL_DATABASE: catalogue_db
-      MYSQL_USER: testuser
-      MYSQL_PASSWORD: testpassword
-    ports:
-      - "3307:3306"
-    networks:
-      - book_network
+
 
   springboot-microservice-catalog:
     build: .
-    depends_on:
-      - mysql
+
     ports:
       - "8080:8081"
     environment:
