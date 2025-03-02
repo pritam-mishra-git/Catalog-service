@@ -18,7 +18,7 @@ jobs:
         image: mysql:8.0
         env:
           MYSQL_ROOT_PASSWORD: root
-          MYSQL_DATABASE: testdb
+          MYSQL_DATABASE: catalogue_db
           MYSQL_USER: testuser
           MYSQL_PASSWORD: testpassword
         ports:
@@ -26,9 +26,9 @@ jobs:
         options: --health-cmd="mysqladmin ping -h 127.0.0.1 -u root --password=root" --health-interval=10s --health-timeout=5s --health-retries=3
 
     env:
-      DATABASE_URL: jdbc:mysql://127.0.0.1:3306/testdb
-      DATABASE_USERNAME: testuser
-      DATABASE_PASSWORD: testpassword
+      DATABASE_URL: jdbc:mysql://127.0.0.1:3306/catalogue_db
+      DATABASE_USERNAME: root
+      DATABASE_PASSWORD: root
 
     steps:
       - name: Checkout repository
