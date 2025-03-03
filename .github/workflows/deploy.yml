@@ -67,8 +67,4 @@ jobs:
       - name: Push Docker Image to Docker Hub
         run: docker push dockdockgo2001/springboot-microservice-catalog:latest
 
-      - name: Start Docker Compose
-        run: docker-compose up -d
 
-      - name: Check Running Containers
-        run: docker ps
