@@ -12,6 +12,7 @@ services:
       MYSQL_PASSWORD: testpassword
     ports:
       - "3306:3306"
+
     networks:
       - book_network
     volumes:
