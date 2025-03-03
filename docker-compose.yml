@@ -24,6 +24,7 @@ services:
       timeout: 5s
       retries: 5
 
+
   springboot-microservice-catalog:
     build: .
     container_name: catalog-service
