@@ -10,8 +10,21 @@ jobs:
     name: Build & Push Docker Image
     runs-on: ubuntu-latest
 
-    env:
-      IMAGE_NAME: dockdockgo2001/springboot-microservice-catalog
+    services:
+      mysql:
+        image: mysql:8.0
+        env:
+          MYSQL_ROOT_PASSWORD: root
+          MYSQL_DATABASE: catalogue_db
+          MYSQL_USER: testuser
+          MYSQL_PASSWORD: testpassword
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd="mysqladmin ping -h localhost -u testuser --password=testpassword"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=5
 
     steps:
       - name: Checkout Repository
@@ -23,6 +36,18 @@ jobs:
           java-version: '21'
           distribution: 'corretto'
           cache: 'maven'
+
+      - name: Wait for MySQL to be Ready
+        run: |
+          echo "Waiting for MySQL..."
+          for i in {1..30}; do
+            if mysqladmin ping -h 127.0.0.1 -u testuser --password=testpassword --silent; then
+              echo "MySQL is ready!"
+              break
+            fi
+            echo "Waiting for MySQL ($i/30)..."
+            sleep 5
+          done
 
       - name: Build with Maven
         run: mvn -ntp clean package
@@ -37,7 +62,13 @@ jobs:
           password: ${{ secrets.DOCKER_PASSWORD }}
 
       - name: Build Docker Image
-        run: docker build  -t $IMAGE_NAME:latest .
+        run: docker build -t dockdockgo2001/springboot-microservice-catalog:latest .
 
       - name: Push Docker Image to Docker Hub
-        run: docker push $IMAGE_NAME:latest
+        run: docker push dockdockgo2001/springboot-microservice-catalog:latest
+
+      - name: Start Docker Compose
+        run: docker-compose up -d
+
+      - name: Check Running Containers
+        run: docker ps
