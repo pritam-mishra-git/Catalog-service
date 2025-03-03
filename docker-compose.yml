@@ -1,4 +1,5 @@
 
+
 services:
   mysql:
     image: mysql:8.0
@@ -13,21 +14,28 @@ services:
       - "3307:3306"
     networks:
       - book_network
+    volumes:
+      - mysql_data:/var/lib/mysql
 
   springboot-microservice-catalog:
     build: .
-
+    container_name: catalog-service
+    depends_on:
+      - mysql
     ports:
       - "8080:8081"
     environment:
-      DB_HOST: localhost
+      DB_HOST: mysql
       DB_PORT: 3306
       DB_NAME: catalogue_db
-      DB_USER: root
-      DB_PASSWORD: root
+      DB_USER: testuser
+      DB_PASSWORD: testpassword
     networks:
       - book_network
 
 networks:
   book_network:
     driver: bridge
+
+volumes:
+  mysql_data:
